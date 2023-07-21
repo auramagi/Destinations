@@ -10,7 +10,7 @@ import SwiftUI
 public struct ResolvedView<Value: Hashable>: View {
     let value: Value
     
-    public init(for value: Value) {
+    public init(value: Value) {
         self.value = value
     }
     
