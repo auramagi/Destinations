@@ -12,7 +12,7 @@ struct DestinationResolvingView<D: ResolvableDestination>: View {
 
     @Environment(\.destinationResolver) private var resolver
 
-    @State private var destination: D?
+    @State private var updatedDestination: D?
 
     init(_ configuration: D.Configuration) {
         self.configuration = configuration
@@ -20,7 +20,7 @@ struct DestinationResolvingView<D: ResolvableDestination>: View {
 
     var body: some View {
         Group {
-            if let destination {
+            if let resolver, let destination = updatedDestination ?? resolver.provider(for: D.self)?.make() {
                 ResolvedDestinationView(
                     destination: destination,
                     configuration: configuration
@@ -33,10 +33,9 @@ struct DestinationResolvingView<D: ResolvableDestination>: View {
         }
         .task(id: resolver?.id) {
             guard let resolver else { return }
-            destination = resolver.provider(for: D.self)?.make()
             let values = resolver.providerUpdates(for: D.self).eraseToAnyPublisher().values
             for await provider in values {
-                self.destination = provider.make()
+                self.updatedDestination = provider.make()
             }
         }
     }
