@@ -21,7 +21,7 @@ public struct ResolvedView<Value: Hashable>: View {
 
 extension View {
     public func destination<Value: Hashable, Content: View>(
-        value: Value.Type,
+        for valueType: Value.Type,
         @ViewBuilder _ destination: @escaping (Value) -> Content
     ) -> some View {
         self.destination(ValueDestination(destination))

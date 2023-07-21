@@ -7,18 +7,16 @@
 
 import SwiftUI
 
-struct ValueDestination<Value: Hashable>: ResolvableDestination {
-    typealias Configuration = Value
+public struct ValueDestination<Value: Hashable>: ResolvableDestination {
+    public typealias Configuration = Value
     
     var destination: (Value) -> AnyView
     
     init<V: View>(@ViewBuilder _ destination: @escaping (Value) -> V) {
-        print(#function)
         self.destination = { AnyView(destination($0)) }
     }
     
-    func body(configuration: Value) -> some View {
-        let _ = print(#function)
+    public func body(configuration: Value) -> some View {
         destination(configuration)
     }
 }

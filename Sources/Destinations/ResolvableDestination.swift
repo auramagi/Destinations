@@ -22,7 +22,9 @@ extension ResolvableDestination {
 }
 
 extension View {
-    public func destination<D: ResolvableDestination>(_ destination: @autoclosure @escaping () -> D) -> some View {
+    public func destination<Destination: ResolvableDestination>(
+        _ destination: @autoclosure @escaping () -> Destination
+    ) -> some View {
         self
             .transformEnvironment(\.destinationResolver) { resolver in
                 resolver?.register(provider: .init(make: destination))
