@@ -8,16 +8,16 @@
 import SwiftUI
 
 public protocol ResolvableDestination: DynamicProperty {
-    associatedtype Configuration: Hashable
+    associatedtype Value: Hashable
 
     associatedtype Content: View
 
-    @ViewBuilder func body(configuration: Configuration) -> Content
+    @ViewBuilder func body(value: Value) -> Content
 }
 
 extension ResolvableDestination {
-    public static func resolve(_ configuration: Configuration) -> some View {
-        DestinationResolvingView<Self>(configuration)
+    public static func resolve(_ value: Value) -> some View {
+        DestinationResolvingView<Self>(value)
     }
 }
 

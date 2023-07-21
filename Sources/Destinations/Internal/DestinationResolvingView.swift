@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct DestinationResolvingView<D: ResolvableDestination>: View {
-    let configuration: D.Configuration
+    let value: D.Value
 
     @Environment(\.destinationResolver) private var resolver
 
     @State private var updatedDestination: D?
 
-    init(_ configuration: D.Configuration) {
-        self.configuration = configuration
+    init(_ value: D.Value) {
+        self.value = value
     }
 
     var body: some View {
@@ -23,7 +23,7 @@ struct DestinationResolvingView<D: ResolvableDestination>: View {
             if let resolver, let destination = updatedDestination ?? resolver.provider(for: D.self)?.make() {
                 ResolvedDestinationView(
                     destination: destination,
-                    configuration: configuration
+                    value: value
                 )
             } else {
                 Image(systemName: "exclamationmark.triangle")

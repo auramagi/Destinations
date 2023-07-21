@@ -12,10 +12,10 @@ extension View {
         isPresented: Binding<Bool>,
         onDismiss: (() -> Void)? = nil,
         destination: Destination.Type,
-        configuration: Destination.Configuration
+        value: Destination.Value
     ) -> some View {
         self.sheet(isPresented: isPresented, onDismiss: onDismiss) {
-            Destination.resolve(configuration)
+            Destination.resolve(value)
         }
     }
 
@@ -23,18 +23,18 @@ extension View {
         item: Binding<Item?>,
         onDismiss: (() -> Void)? = nil,
         destination: Destination.Type,
-        configuration: @escaping (Item) -> Destination.Configuration
+        value: @escaping (Item) -> Destination.Value
     ) -> some View {
         self.sheet(item: item, onDismiss: onDismiss) { item in
-            Destination.resolve(configuration(item))
+            Destination.resolve(value(item))
         }
     }
 
     public func sheet<Destination: ResolvableDestination>(
-        item: Binding<Destination.Configuration?>,
+        item: Binding<Destination.Value?>,
         onDismiss: (() -> Void)? = nil,
         destination: Destination.Type
-    ) -> some View where Destination.Configuration: Identifiable {
+    ) -> some View where Destination.Value: Identifiable {
         self.sheet(item: item, onDismiss: onDismiss) { item in
             Destination.resolve(item)
         }
@@ -77,8 +77,8 @@ struct Sheets_Previews: PreviewProvider {
         let id: String
     }
     private struct TestDestination: ResolvableDestination {
-        func body(configuration: TestItem) -> some View {
-            Text(configuration.id)
+        func body(value: TestItem) -> some View {
+            Text(value.id)
         }
     }
     
@@ -114,9 +114,9 @@ struct Sheets_Previews: PreviewProvider {
                 }
                 
             }
-            .sheet(isPresented: $isPresented1, destination: TestDestination.self, configuration: .init(id: "Sheet for isPresented1"))
+            .sheet(isPresented: $isPresented1, destination: TestDestination.self, value: .init(id: "Sheet for isPresented1"))
             .sheet(isPresented: $isPresented2, value: TestItem(id: "Sheet for isPresented2"))
-            .sheet(item: $item1, destination: TestDestination.self, configuration: { $0 })
+            .sheet(item: $item1, destination: TestDestination.self, value: { $0 })
             .sheet(item: $item2, destination: TestDestination.self)
             .sheet(item: $item3, value: { $0 })
             .sheet(value: $item4)

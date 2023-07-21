@@ -10,9 +10,9 @@ import SwiftUI
 struct ResolvedDestinationView<D: ResolvableDestination>: View {
     let destination: D
     
-    let configuration: D.Configuration
+    let value: D.Value
     
     var body: some View {
-        destination.body(configuration: configuration)
+        destination.body(value: value)
     }
 }

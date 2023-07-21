@@ -10,9 +10,9 @@ import SwiftUI
 public struct DestinationNavigationLink<Label: View, Destination: ResolvableDestination>: View {
     let link: NavigationLink<Label, DestinationResolvingView<Destination>>
     
-    public init(destination: Destination.Type, configuration: Destination.Configuration, @ViewBuilder label: () -> Label) {
+    public init(destination: Destination.Type, value: Destination.Value, @ViewBuilder label: () -> Label) {
         self.link = NavigationLink {
-            DestinationResolvingView<Destination>(configuration)
+            DestinationResolvingView<Destination>(value)
         } label: {
             label()
         }
@@ -24,15 +24,15 @@ public struct DestinationNavigationLink<Label: View, Destination: ResolvableDest
 }
 
 extension DestinationNavigationLink where Label == Text {
-    public init(_ titleKey: LocalizedStringKey, destination: Destination.Type, configuration: Destination.Configuration) {
+    public init(_ titleKey: LocalizedStringKey, destination: Destination.Type, value: Destination.Value) {
         self.link = .init(titleKey) {
-            DestinationResolvingView<Destination>(configuration)
+            DestinationResolvingView<Destination>(value)
         }
     }
     
-    public init(_ title: some StringProtocol, destination: Destination.Type, configuration: Destination.Configuration) {
+    public init(_ title: some StringProtocol, destination: Destination.Type, value: Destination.Value) {
         self.link = .init(title) {
-            DestinationResolvingView<Destination>(configuration)
+            DestinationResolvingView<Destination>(value)
         }
     }
 }
@@ -65,17 +65,17 @@ extension DestinationNavigationLink where Label == Text {
 @available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
 struct DestinationNavigationLink_Previews: PreviewProvider {
     private struct TestDestination: ResolvableDestination {
-        func body(configuration: String) -> some View {
-            Text(configuration)
+        func body(value: String) -> some View {
+            Text(value)
         }
     }
     
     static var previews: some View {
         NavigationStack {
             List {
-                DestinationNavigationLink("Protocol link 1", destination: TestDestination.self, configuration: "Protocol conf 1")
+                DestinationNavigationLink("Protocol link 1", destination: TestDestination.self, value: "Protocol conf 1")
                 
-                DestinationNavigationLink(destination: TestDestination.self, configuration: "Protocol conf 2") {
+                DestinationNavigationLink(destination: TestDestination.self, value: "Protocol conf 2") {
                     Text("Protocol link 2")
                 }
                 
