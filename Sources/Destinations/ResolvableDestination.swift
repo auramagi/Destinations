@@ -29,10 +29,6 @@ extension View {
             .transformEnvironment(\.destinationResolver) { resolver in
                 resolver?.register(provider: .init(make: destination))
             }
-            .transformEnvironment(\.destinationResolver) { resolver in
-                if resolver == nil {
-                    resolver = .init()
-                }
-            }
+            .modifier(DestinationResolverInjectionModifier())
     }
 }
