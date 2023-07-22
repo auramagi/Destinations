@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-struct DestinationResolverEnvironmentKey: EnvironmentKey {
-    static var defaultValue: DestinationResolver? { nil }
+public struct DestinationResolverEnvironmentKey: EnvironmentKey {
+    public static var defaultValue: DestinationResolver? { nil }
 }
 
 extension EnvironmentValues {
-    var destinationResolver: DestinationResolver? {
+    public var destinationResolver: DestinationResolver? {
         get { self[DestinationResolverEnvironmentKey.self] }
         set { self[DestinationResolverEnvironmentKey.self] = newValue }
     }
