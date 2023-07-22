@@ -8,56 +8,59 @@
 import SwiftUI
 
 public struct DestinationNavigationLink<Label: View, Destination: ResolvableDestination>: View {
-    let link: NavigationLink<Label, DestinationResolvingView<Destination>>
+    let value: Destination.Value
+    
+    let label: Label
+    
+    @Environment(\.destinationResolver) private var destinationResolver
     
     public init(destination: Destination.Type, value: Destination.Value, @ViewBuilder label: () -> Label) {
-        self.link = NavigationLink {
-            DestinationResolvingView<Destination>(value)
-        } label: {
-            label()
-        }
+        self.value = value
+        self.label = label()
     }
     
     public var body: some View {
-        link
+        NavigationLink {
+            DestinationResolvingView<Destination>(value)
+                .environment(\.destinationResolver, destinationResolver)
+        } label: {
+            label
+        }
+
     }
 }
 
 extension DestinationNavigationLink where Label == Text {
     public init(_ titleKey: LocalizedStringKey, destination: Destination.Type, value: Destination.Value) {
-        self.link = .init(titleKey) {
-            DestinationResolvingView<Destination>(value)
+        self.init(destination: destination, value: value) {
+            Text(titleKey)
         }
     }
     
     public init(_ title: some StringProtocol, destination: Destination.Type, value: Destination.Value) {
-        self.link = .init(title) {
-            DestinationResolvingView<Destination>(value)
+        self.init(destination: destination, value: value) {
+            Text(title)
         }
     }
 }
 
 extension DestinationNavigationLink {
     public init<Value: Hashable>(value: Value, @ViewBuilder label: () -> Label) where Destination == ValueDestination<Value> {
-        self.link = .init {
-            DestinationResolvingView<ValueDestination<Value>>(value)
-        } label: {
-            label()
-        }
+        self.init(destination: ValueDestination<Value>.self, value: value, label: label)
     }
 }
 
 
 extension DestinationNavigationLink where Label == Text {
     public init<Value: Hashable>(_ titleKey: LocalizedStringKey, value: Value) where Destination == ValueDestination<Value> {
-        self.link = .init(titleKey) {
-            DestinationResolvingView<ValueDestination<Value>>(value)
+        self.init(destination: ValueDestination<Value>.self, value: value) {
+            Text(titleKey)
         }
     }
     
     public init<Value: Hashable>(_ title: some StringProtocol, value: Value) where Destination == ValueDestination<Value> {
-        self.link = .init(title) {
-            DestinationResolvingView<ValueDestination<Value>>(value)
+        self.init(destination: ValueDestination<Value>.self, value: value) {
+            Text(title)
         }
     }
 }
@@ -73,9 +76,9 @@ struct DestinationNavigationLink_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             List {
-                DestinationNavigationLink("Protocol link 1", destination: TestDestination.self, value: "Protocol conf 1")
+                DestinationNavigationLink("Protocol link 1", destination: TestDestination.self, value: "Protocol value 1")
                 
-                DestinationNavigationLink(destination: TestDestination.self, value: "Protocol conf 2") {
+                DestinationNavigationLink(destination: TestDestination.self, value: "Protocol value 2") {
                     Text("Protocol link 2")
                 }
                 
