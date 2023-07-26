@@ -63,7 +63,6 @@ extension DestinationNavigationLink where Label == Text {
     }
 }
 
-@available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
 struct DestinationNavigationLink_Previews: PreviewProvider {
     private struct TestDestination: ResolvableDestination {
         func body(value: String) -> some View {
@@ -72,7 +71,7 @@ struct DestinationNavigationLink_Previews: PreviewProvider {
     }
     
     static var previews: some View {
-        NavigationStack {
+        navigation {
             List {
                 DestinationNavigationLink("Protocol link 1", destination: TestDestination.self, value: "Protocol value 1")
                 
@@ -89,5 +88,17 @@ struct DestinationNavigationLink_Previews: PreviewProvider {
         }
         .destination(TestDestination())
         .destination(for: String.self) { Text($0) }
+    }
+
+    @ViewBuilder private static func navigation(@ViewBuilder root: () -> some View) -> some View {
+        if #available(iOS 16.0, *) {
+            NavigationStack {
+                root().navigationTitle("NavigationStack")
+            }
+        } else {
+            NavigationView {
+                root().navigationTitle("NavigationView")
+            }
+        }
     }
 }
