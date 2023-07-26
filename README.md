@@ -7,8 +7,8 @@ Resolve SwiftUI views trough a resolver injected in parent. Modeled after Naviga
 ### Destinations with the `ResolvableDestination` protocol
 
 1. Implement a custom type that adopts the `ResolvableDestination` protocol
-2. Provide a value of this type in the parent view
-3. Use the static `resolve` function in the child view to instantiate the destination view
+2. Provide a value of this type in the parent view with the `destination` view modifier
+3. Resolve the view using `DestinationView` with the initializer that takes the destination type as the first argument
 
 ```swift
 import Destinations
@@ -30,14 +30,19 @@ struct ParentView: View {
 
 struct ChildView: View {
     var body: some View {
-        MyDestination.resolve(1)
+        DestinationView(MyDestination.self, value: 1)
     }
 }
 ```
 
 ### Destinations with `@ViewBuilder` closures
 
-This is a more lightweight alternative approach that more closely resembles the way you use NavigationStack. There is one significant trade-off, though: like NavigationStack, this will use `AnyView` inside to erase the type information of the view that you provide in the `destination` closure, which is a syntax limitation with how this API is designed. In practical terms, this is will be somewhat less efficient when SwiftUI needs to detect what was changed between view updates.
+Destinations comes with one special destination that you can use to resolve any Hashable value without implementing a custom `ResolvableDestination` type.
+
+1. Provide a `@ViewBuilder` closure for a value type in the parent view with the `destination(for:)` view modifier
+2. Resolve the view using `DestinationView` with the initializer with the value as the only argument
+
+Note, however, that while this approach more closely resembles NavigationStack and is easier to use, it has one significant one significant trade-off. Like NavigationStack, it uses `AnyView` inside to erase the type information of the view that you provide in the `destination` closure, which is an unavoidable syntax limitation. In practical terms, this is may be less efficient when SwiftUI needs to detect changes between view updates.
 
 ```swift
 import Destinations
@@ -53,7 +58,7 @@ struct ParentView: View {
 
 struct ChildView: View {
     var body: some View {
-        ResolvedView(value: 1)
+        DestinationView(value: 1)
     }
 }
 ```
