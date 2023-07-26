@@ -76,7 +76,7 @@ struct MyDestination: ResolvableDestination {
     }
 }
 
-struct MyView: View {
+struct ContentView: View {
     @State var isSheetPresented = false
     
     var body: some View {
