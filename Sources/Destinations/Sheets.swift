@@ -15,7 +15,7 @@ extension View {
         value: Destination.Value
     ) -> some View {
         self.sheet(isPresented: isPresented, onDismiss: onDismiss) {
-            ResolvedView(destination: Destination.self, value: value)
+            DestinationView(Destination.self, value: value)
         }
     }
 
@@ -26,7 +26,7 @@ extension View {
         value: @escaping (Item) -> Destination.Value
     ) -> some View {
         self.sheet(item: item, onDismiss: onDismiss) { item in
-            ResolvedView(destination: Destination.self, value: value(item))
+            DestinationView(Destination.self, value: value(item))
         }
     }
 
@@ -36,7 +36,7 @@ extension View {
         destination: Destination.Type
     ) -> some View where Destination.Value: Identifiable {
         self.sheet(item: item, onDismiss: onDismiss) { item in
-            ResolvedView(destination: Destination.self, value: item)
+            DestinationView(Destination.self, value: item)
         }
     }
 }
@@ -48,7 +48,7 @@ extension View {
         value: Value
     ) -> some View {
         self.sheet(isPresented: isPresented, onDismiss: onDismiss) {
-            ResolvedView(destination: ValueDestination.self, value: value)
+            DestinationView(value: value)
         }
     }
 
@@ -58,7 +58,7 @@ extension View {
         value: @escaping (Item) -> Value
     ) -> some View {
         self.sheet(item: item, onDismiss: onDismiss) { item in
-            ResolvedView(destination: ValueDestination.self, value: value(item))
+            DestinationView(value: value(item))
         }
     }
 
@@ -67,7 +67,7 @@ extension View {
         onDismiss: (() -> Void)? = nil
     ) -> some View where Value: Identifiable {
         self.sheet(item: value, onDismiss: onDismiss) { value in
-            ResolvedView(destination: ValueDestination.self, value: value)
+            DestinationView(value: value)
         }
     }
 }

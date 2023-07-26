@@ -25,4 +25,11 @@ extension View {
             }
             .modifier(DestinationResolverInjectionModifier())
     }
+
+    public func destination<Value: Hashable, Content: View>(
+        for valueType: Value.Type,
+        @ViewBuilder _ destination: @escaping (Value) -> Content
+    ) -> some View {
+        self.destination(ValueDestination(destination))
+    }
 }

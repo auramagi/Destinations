@@ -1,5 +1,5 @@
 //
-//  DestinationResolvingView.swift
+//  DestinationView.swift
 //  
 //
 //  Created by Mikhail Apurin on 22.07.2023.
@@ -7,18 +7,14 @@
 
 import SwiftUI
 
-struct DestinationResolvingView<D: ResolvableDestination>: View {
+public struct DestinationView<D: ResolvableDestination>: View {
     let value: D.Value
 
     @Environment(\.destinationResolver) private var resolver
 
     @State private var updatedDestination: D?
 
-    init(_ value: D.Value) {
-        self.value = value
-    }
-
-    var body: some View {
+    public var body: some View {
         Group {
             if let resolver, let destination = updatedDestination ?? resolver.provider(for: D.self)?.make() {
                 ResolvedDestinationView(
@@ -38,5 +34,17 @@ struct DestinationResolvingView<D: ResolvableDestination>: View {
                 self.updatedDestination = provider.make()
             }
         }
+    }
+}
+
+extension DestinationView {
+    public init(_ destination: D.Type = D.self, value: D.Value) {
+        self.value = value
+    }
+}
+
+extension DestinationView {
+    public init<Value: Hashable>(value: Value) where D == ValueDestination<Value> {
+        self.init(ValueDestination<Value>.self, value: value)
     }
 }

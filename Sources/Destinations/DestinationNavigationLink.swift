@@ -21,7 +21,7 @@ public struct DestinationNavigationLink<Label: View, Destination: ResolvableDest
     
     public var body: some View {
         NavigationLink {
-            DestinationResolvingView<Destination>(value)
+            DestinationView(Destination.self, value: value)
                 .environment(\.destinationResolver, destinationResolver)
         } label: {
             label
