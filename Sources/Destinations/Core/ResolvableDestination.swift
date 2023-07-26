@@ -23,7 +23,7 @@ extension View {
             .transformEnvironment(\.destinationResolver) { resolver in
                 resolver?.register(provider: .init(make: destination))
             }
-            .modifier(DestinationResolverInjectionModifier())
+            .modifier(DestinationResolverInjectionModifier(prefersEnvironmentResolver: true))
     }
 
     public func destination<Value: Hashable, Content: View>(

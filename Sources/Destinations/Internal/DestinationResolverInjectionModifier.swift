@@ -8,26 +8,22 @@
 import SwiftUI
 
 struct DestinationResolverInjectionModifier: ViewModifier {
+    let prefersEnvironmentResolver: Bool
+
+    @State private var resolver = DestinationResolver()
+
     @Environment(\.destinationResolver) private var environmentResolver
-    
-    @State private var resolver: DestinationResolver?
 
     func body(content: Content) -> some View {
         content
-            .environment(\.destinationResolver, environmentResolver ?? resolver)
-            .onAppear {
-                updateState()
-            }
-            .onChange(of: environmentResolver?.id) { _ in
-                updateState()
-            }
+            .environment(\.destinationResolver, injectedResolver)
     }
-    
-    func updateState() {
-        if environmentResolver == nil {
-            resolver = .init()
+
+    var injectedResolver: DestinationResolver {
+        if prefersEnvironmentResolver, let environmentResolver {
+            return environmentResolver
         } else {
-            resolver = nil
+            return resolver
         }
     }
 }

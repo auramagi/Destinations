@@ -40,3 +40,9 @@ extension DestinationResolver {
         canResolve(destinationType: ValueDestination<Value>.self)
     }
 }
+
+extension View {
+    public func withNavigationResolver() -> some View {
+        self.modifier(DestinationResolverInjectionModifier(prefersEnvironmentResolver: false))
+    }
+}

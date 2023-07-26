@@ -26,7 +26,6 @@ public struct DestinationNavigationLink<Label: View, Destination: ResolvableDest
         } label: {
             label
         }
-
     }
 }
 
@@ -49,7 +48,6 @@ extension DestinationNavigationLink {
         self.init(destination: ValueDestination<Value>.self, value: value, label: label)
     }
 }
-
 
 extension DestinationNavigationLink where Label == Text {
     public init<Value: Hashable>(_ titleKey: LocalizedStringKey, value: Value) where Destination == ValueDestination<Value> {
