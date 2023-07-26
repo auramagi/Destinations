@@ -15,7 +15,7 @@ extension View {
         value: Destination.Value
     ) -> some View {
         self.sheet(isPresented: isPresented, onDismiss: onDismiss) {
-            Destination.resolve(value)
+            ResolvedView(destination: Destination.self, value: value)
         }
     }
 
@@ -26,7 +26,7 @@ extension View {
         value: @escaping (Item) -> Destination.Value
     ) -> some View {
         self.sheet(item: item, onDismiss: onDismiss) { item in
-            Destination.resolve(value(item))
+            ResolvedView(destination: Destination.self, value: value(item))
         }
     }
 
@@ -36,7 +36,7 @@ extension View {
         destination: Destination.Type
     ) -> some View where Destination.Value: Identifiable {
         self.sheet(item: item, onDismiss: onDismiss) { item in
-            Destination.resolve(item)
+            ResolvedView(destination: Destination.self, value: item)
         }
     }
 }
@@ -48,7 +48,7 @@ extension View {
         value: Value
     ) -> some View {
         self.sheet(isPresented: isPresented, onDismiss: onDismiss) {
-            ValueDestination.resolve(value)
+            ResolvedView(destination: ValueDestination.self, value: value)
         }
     }
 
@@ -58,7 +58,7 @@ extension View {
         value: @escaping (Item) -> Value
     ) -> some View {
         self.sheet(item: item, onDismiss: onDismiss) { item in
-            ValueDestination.resolve(value(item))
+            ResolvedView(destination: ValueDestination.self, value: value(item))
         }
     }
 
@@ -67,7 +67,7 @@ extension View {
         onDismiss: (() -> Void)? = nil
     ) -> some View where Value: Identifiable {
         self.sheet(item: value, onDismiss: onDismiss) { value in
-            ValueDestination.resolve(value)
+            ResolvedView(destination: ValueDestination.self, value: value)
         }
     }
 }
@@ -76,6 +76,7 @@ struct Sheets_Previews: PreviewProvider {
     private struct TestItem: Identifiable, Hashable {
         let id: String
     }
+    
     private struct TestDestination: ResolvableDestination {
         func body(value: TestItem) -> some View {
             Text(value.id)

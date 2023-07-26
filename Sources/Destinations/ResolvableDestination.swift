@@ -15,12 +15,6 @@ public protocol ResolvableDestination: DynamicProperty {
     @ViewBuilder func body(value: Value) -> Content
 }
 
-extension ResolvableDestination {
-    public static func resolve(_ value: Value) -> some View {
-        DestinationResolvingView<Self>(value)
-    }
-}
-
 extension View {
     public func destination<Destination: ResolvableDestination>(
         _ destination: @autoclosure @escaping () -> Destination

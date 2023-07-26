@@ -7,15 +7,38 @@
 
 import SwiftUI
 
-public struct ResolvedView<Value: Hashable>: View {
-    let value: Value
-    
-    public init(value: Value) {
-        self.value = value
+public struct ResolvedView<Destination: ResolvableDestination, Value: Hashable>: View {
+    enum Content {
+        case destinationValue(Destination.Value)
+        case anyValue(Value)
     }
-    
+
+    let content: Content
+
     public var body: some View {
-        ValueDestination.resolve(value)
+        switch content {
+        case let .destinationValue(value):
+            DestinationResolvingView<Destination>(value)
+
+        case let .anyValue(value):
+            DestinationResolvingView<ValueDestination>(value)
+        }
+    }
+}
+
+extension ResolvedView where Value == Destination.Value {
+    public init(destination: Destination.Type, value: Value) {
+        self.content = .destinationValue(value)
+    }
+}
+
+extension Never: ResolvableDestination {
+    public func body(value: Never) -> EmptyView { }
+}
+
+extension ResolvedView where Destination == Never {
+    public init(value: Value) {
+        self.content = .anyValue(value)
     }
 }
 
