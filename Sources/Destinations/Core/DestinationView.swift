@@ -31,8 +31,9 @@ public struct DestinationView<D: ResolvableDestination>: View {
             guard let resolver else { return }
             let values = resolver.providerUpdates(for: D.self).eraseToAnyPublisher().values
             for await provider in values {
-                self.updatedDestination = provider.make()
+                updatedDestination = provider.make()
             }
+            updatedDestination = nil
         }
     }
 }
