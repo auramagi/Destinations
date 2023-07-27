@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// A special destination type that is used to represent destinations that match a value data type provided through ``DestinationView/destination(for:_:)``.
 public struct ValueDestination<Value: Hashable>: ResolvableDestination {
     var destination: (Value) -> AnyView
     
