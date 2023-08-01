@@ -44,7 +44,8 @@ struct AdvancedUsage_Navigation_Previews: PreviewProvider {
     }
 }
 
-@available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
+#if !os(tvOS) && !os(watchOS)
+@available(iOS 16.0, macOS 13.0, watchOS 9.0, *)
 struct AdvancedUsage_State_Previews: PreviewProvider {
     struct FileSizeLabelDestination: ResolvableDestination {
         @State private var fileSize: Result<Int, Error>?
@@ -126,3 +127,4 @@ struct AdvancedUsage_State_Previews: PreviewProvider {
         }
     }
 }
+#endif

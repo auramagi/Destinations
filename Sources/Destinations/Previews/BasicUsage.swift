@@ -12,7 +12,7 @@ struct BasicUsage_Closure_Previews: PreviewProvider {
         var body: some View {
             ChildView()
                 .destination(for: Int.self) { value in
-                    Text(100 + value, format: .number)
+                    Text("\(100 + value)")
                 }
         }
     }
@@ -28,13 +28,12 @@ struct BasicUsage_Closure_Previews: PreviewProvider {
     }
 }
 
-
 struct BasicUsage_Destination_Previews: PreviewProvider {
     struct MyDestination: ResolvableDestination {
         let base: Int
 
         func body(value: Int) -> some View {
-            Text(base + value, format: .number)
+            Text("\(base + value)")
         }
     }
 

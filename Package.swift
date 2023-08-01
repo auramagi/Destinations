@@ -4,7 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "Destinations",
-    platforms: [.iOS(.v15), .macOS(.v12), .macCatalyst(.v15), .tvOS(.v15), .watchOS(.v8)],
+    platforms: [.iOS(.v14), .macOS(.v11), .macCatalyst(.v14), .tvOS(.v14), .watchOS(.v7)],
     products: [
         .library(
             name: "Destinations",

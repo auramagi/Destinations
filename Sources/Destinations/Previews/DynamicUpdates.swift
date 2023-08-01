@@ -7,7 +7,8 @@
 
 import SwiftUI
 
-@available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
+#if !os(tvOS)
+@available(iOS 16.0, macOS 13.0, watchOS 9.0, *)
 struct DynamicUpdates_Persistent_Previews: PreviewProvider {
     struct ContentView: View {
         var body: some View {
@@ -24,13 +25,12 @@ struct DynamicUpdates_Persistent_Previews: PreviewProvider {
         @State var value = 1
 
         var body: some View {
-            DestinationView(value: value)
-                .toolbar {
-                    ToolbarItemGroup(placement: .bottomBar) {
-                        Stepper("Value: \(value)", value: $value)
-                            .padding()
-                    }
-                }
+            VStack {
+                DestinationView(value: value)
+    
+                Stepper("Value: \(value)", value: $value)
+            }
+            .padding()
         }
     }
 
@@ -40,7 +40,7 @@ struct DynamicUpdates_Persistent_Previews: PreviewProvider {
         @State private var elapsed = 0
 
         var body: some View {
-            List {
+            VStack {
                 Text("Elapsed: \(elapsed, format: .number)")
 
                 Text("Value: \(value, format: .number)")
@@ -57,23 +57,24 @@ struct DynamicUpdates_Persistent_Previews: PreviewProvider {
 
     static var previews: some View {
         ContentView()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
-@available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
+@available(iOS 16.0, macOS 13.0, watchOS 9.0, *)
+@available(tvOS, unavailable)
 struct DynamicUpdates_Conditional_Previews: PreviewProvider {
     struct ContentView: View {
         @State var base = 1
 
         var body: some View {
             NavigationStack {
-                CounterScreen()
-                    .toolbar {
-                        ToolbarItemGroup(placement: .navigationBarTrailing) {
-                            Stepper("Base: \(base)", value: $base)
-                                .padding()
-                        }
-                    }
+                VStack {
+                    CounterScreen()
+    
+                    Stepper("Base: \(base)", value: $base)
+                }
+                .padding()
             }
             .destination(CustomViewDestination(base: base))
         }
@@ -83,18 +84,15 @@ struct DynamicUpdates_Conditional_Previews: PreviewProvider {
         @State var value = 1
 
         var body: some View {
-            ZStack {
+            VStack {
                 if value < 3 {
                     Text("Value is less than 3")
                 } else {
                     DestinationView(value: value)
                 }
-            }
-            .toolbar {
-                ToolbarItemGroup(placement: .bottomBar) {
-                    Stepper("Value: \(value)", value: $value)
-                        .padding()
-                }
+                
+                Stepper("Value: \(value)", value: $value)
+                    .padding()
             }
         }
     }
@@ -105,7 +103,7 @@ struct DynamicUpdates_Conditional_Previews: PreviewProvider {
         @State var elapsed = 0
 
         func body(value: Int) -> some View {
-            List {
+            VStack {
                 Text("Elapsed: \(elapsed, format: .number)")
 
                 Text("Base: \(base, format: .number)")
@@ -124,5 +122,7 @@ struct DynamicUpdates_Conditional_Previews: PreviewProvider {
 
     static var previews: some View {
         ContentView()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
+#endif
