@@ -41,6 +41,6 @@ extension View {
         for valueType: Value.Type,
         @ViewBuilder _ destination: @escaping (Value) -> Content
     ) -> some View {
-        self.destination(ValueDestination(destination))
+        self.destination(ClosureDestination(destination))
     }
 }

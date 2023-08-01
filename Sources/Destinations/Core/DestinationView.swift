@@ -24,7 +24,7 @@ public struct DestinationView<Value: Hashable>: View {
     public var body: some View {
         Group {
             if let resolver, let provider = updatedProvider ?? resolver.provider(for: Value.self) {
-                provider.make(value)
+                provider(value)
             } else {
                 Image(systemName: "exclamationmark.triangle")
                     .symbolVariant(.fill)

@@ -20,7 +20,7 @@ public final class DestinationResolver: Identifiable {
     public init() { }
 
     func register<Destination: ResolvableDestination>(destination: @autoclosure @escaping () -> Destination) {
-        let provider = ResolvableDestinationProvider(make: { AnyView(ResolvedDestinationView(destination: destination(), value: $0)) })
+        let provider = ResolvableDestinationProvider(destination: destination())
         providers[ObjectIdentifier(Destination.Value.self)] = provider
         onChange.send(provider)
     }
