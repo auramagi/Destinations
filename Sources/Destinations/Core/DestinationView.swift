@@ -5,7 +5,10 @@
 //  Created by Mikhail Apurin on 22.07.2023.
 //
 
+import OSLog
 import SwiftUI
+
+private let log = Logger(subsystem: "me.apurin.destinations", category: "DestinationView")
 
 /// Abstract view that will be dynamically resolved to the view associated with its ``ResolvableDestination``.
 public struct DestinationView<Value: Hashable>: View {
@@ -26,9 +29,13 @@ public struct DestinationView<Value: Hashable>: View {
             if let resolver, let provider = updatedProvider ?? resolver.provider(for: Value.self) {
                 provider(value)
             } else {
-                Image(systemName: "exclamationmark.triangle")
-                    .symbolVariant(.fill)
-                    .symbolRenderingMode(.multicolor)
+                #if DEBUG
+                let valueType = String(reflecting: Value.self)
+                let _ = log.warning("Unable to resolve destination for value type \(valueType, privacy: .public), showing a placeholder.")
+                Text("⚠️ \(valueType)")
+                #else
+                Text("⚠️")
+                #endif
             }
         }
         .task(id: resolver?.id) {
