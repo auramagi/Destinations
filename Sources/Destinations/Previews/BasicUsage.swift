@@ -7,7 +7,29 @@
 
 import SwiftUI
 
-struct BasicUsage_Provider_Previews: PreviewProvider {
+struct BasicUsage_Closure_Previews: PreviewProvider {
+    struct ParentView: View {
+        var body: some View {
+            ChildView()
+                .destination(for: Int.self) { value in
+                    Text(100 + value, format: .number)
+                }
+        }
+    }
+
+    struct ChildView: View {
+        var body: some View {
+            DestinationView(value: 1)
+        }
+    }
+
+    static var previews: some View {
+        ParentView()
+    }
+}
+
+
+struct BasicUsage_Destination_Previews: PreviewProvider {
     struct MyDestination: ResolvableDestination {
         let base: Int
 
@@ -20,27 +42,6 @@ struct BasicUsage_Provider_Previews: PreviewProvider {
         var body: some View {
             ChildView()
                 .destination(MyDestination(base: 100))
-        }
-    }
-
-    struct ChildView: View {
-        var body: some View {
-            DestinationView(MyDestination.self, value: 1)
-        }
-    }
-
-    static var previews: some View {
-        ParentView()
-    }
-}
-
-struct BasicUsage_Closure_Previews: PreviewProvider {
-    struct ParentView: View {
-        var body: some View {
-            ChildView()
-                .destination(for: Int.self) { value in
-                    Text(100 + value, format: .number)
-                }
         }
     }
 

@@ -19,31 +19,26 @@ public final class DestinationResolver: Identifiable {
     
     public init() { }
 
-    func register<D: ResolvableDestination>(provider: ResolvableDestinationProvider<D>) {
-        providers[ObjectIdentifier(D.self)] = provider
+    func register<Destination: ResolvableDestination>(destination: @autoclosure @escaping () -> Destination) {
+        let provider = ResolvableDestinationProvider(make: { AnyView(ResolvedDestinationView(destination: destination(), value: $0)) })
+        providers[ObjectIdentifier(Destination.Value.self)] = provider
         onChange.send(provider)
     }
 
-    func provider<D: ResolvableDestination>(for destinationType: D.Type) -> ResolvableDestinationProvider<D>? {
-        providers[ObjectIdentifier(D.self)] as? ResolvableDestinationProvider<D>
+    func provider<Value: Hashable>(for valueType: Value.Type) -> ResolvableDestinationProvider<Value>? {
+        providers[ObjectIdentifier(Value.self)] as? ResolvableDestinationProvider<Value>
     }
 
-    func providerUpdates<D: ResolvableDestination>(for destinationType: D.Type) -> any Publisher<ResolvableDestinationProvider<D>, Never> {
-        onChange.compactMap { $0 as? ResolvableDestinationProvider<D> }
+    func providerUpdates<Value: Hashable>(for valueType: Value.Type) -> any Publisher<ResolvableDestinationProvider<Value>, Never> {
+        onChange.compactMap { $0 as? ResolvableDestinationProvider<Value> }
     }
 }
 
 extension DestinationResolver {
-    /// Check whether this object can resolve a custom ``ResolvableDestination`` type.
-    /// - Parameter destinationType: Custom resolvable destination type
-    public func canResolve<Destination: ResolvableDestination>(destinationType: Destination.Type) -> Bool {
-        provider(for: destinationType) != nil
-    }
-
     /// Check whether this object can resolve a value type.
     /// - Parameter valueType: A resolvable value type.
-    public func canResolve<Value: Hashable>(valueType: Value.Type) -> Bool {
-        canResolve(destinationType: ValueDestination<Value>.self)
+    public func canResolve<V: Hashable>(valueType: V.Type) -> Bool {
+        provider(for: valueType) != nil
     }
 }
 

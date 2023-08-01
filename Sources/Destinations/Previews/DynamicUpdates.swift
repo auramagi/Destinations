@@ -87,7 +87,7 @@ struct DynamicUpdates_Conditional_Previews: PreviewProvider {
                 if value < 3 {
                     Text("Value is less than 3")
                 } else {
-                    DestinationView(CustomViewDestination.self, value: value)
+                    DestinationView(value: value)
                 }
             }
             .toolbar {

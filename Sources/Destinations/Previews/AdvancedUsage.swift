@@ -23,7 +23,6 @@ struct AdvancedUsage_Navigation_Previews: PreviewProvider {
                 List {
                     DestinationNavigationLink(
                         "Present MyDestination with push transition",
-                        destination: MyDestination.self,
                         value: "Hello, world!"
                     )
 
@@ -34,7 +33,6 @@ struct AdvancedUsage_Navigation_Previews: PreviewProvider {
             }
             .sheet(
                 isPresented: $isSheetPresented,
-                destination: MyDestination.self,
                 value: "Hello, modal world!"
             )
             .destination(MyDestination())
@@ -86,7 +84,7 @@ struct AdvancedUsage_State_Previews: PreviewProvider {
             } label: {
                 LabeledContent {
                     if let url {
-                        DestinationView(FileSizeLabelDestination.self, value: url)
+                        DestinationView(value: url)
                     }
                 } label: {
                     Text(url?.absoluteString ?? "Select file")

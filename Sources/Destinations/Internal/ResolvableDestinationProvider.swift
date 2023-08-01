@@ -7,6 +7,6 @@
 
 import SwiftUI
 
-struct ResolvableDestinationProvider<D: ResolvableDestination> {
-    let make: () -> D
+struct ResolvableDestinationProvider<Value: Hashable> {
+    let make: (Value) -> AnyView
 }

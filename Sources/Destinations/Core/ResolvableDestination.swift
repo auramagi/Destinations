@@ -28,7 +28,7 @@ extension View {
     ) -> some View {
         self
             .transformEnvironment(\.destinationResolver) { resolver in
-                resolver?.register(provider: .init(make: destination))
+                resolver?.register(destination: destination())
             }
             .modifier(DestinationResolverInjectionModifier(prefersEnvironmentResolver: true))
     }

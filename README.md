@@ -1,6 +1,6 @@
 # Destinations
 
-Resolve SwiftUI views trough a resolver injected in parent. Modeled after NavigationStack navigationDestination pattern.
+Resolve SwiftUI views trough a resolver injected in parent that is inspired by NavigationStack navigationDestination pattern.
 
 ## Usage
 

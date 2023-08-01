@@ -7,21 +7,21 @@
 
 import SwiftUI
 
-public struct DestinationNavigationLink<Label: View, Destination: ResolvableDestination>: View {
-    let value: Destination.Value
+public struct DestinationNavigationLink<Label: View, Value: Hashable>: View {
+    let value: Value
     
     let label: Label
     
     @Environment(\.destinationResolver) private var destinationResolver
     
-    public init(destination: Destination.Type, value: Destination.Value, @ViewBuilder label: () -> Label) {
+    public init(value: Value, @ViewBuilder label: () -> Label) {
         self.value = value
         self.label = label()
     }
     
     public var body: some View {
         NavigationLink {
-            DestinationView(Destination.self, value: value)
+            DestinationView(value: value)
                 .environment(\.destinationResolver, destinationResolver)
         } label: {
             label
@@ -30,34 +30,14 @@ public struct DestinationNavigationLink<Label: View, Destination: ResolvableDest
 }
 
 extension DestinationNavigationLink where Label == Text {
-    public init(_ titleKey: LocalizedStringKey, destination: Destination.Type, value: Destination.Value) {
-        self.init(destination: destination, value: value) {
+    public init(_ titleKey: LocalizedStringKey, value: Value) {
+        self.init(value: value) {
             Text(titleKey)
         }
     }
     
-    public init(_ title: some StringProtocol, destination: Destination.Type, value: Destination.Value) {
-        self.init(destination: destination, value: value) {
-            Text(title)
-        }
-    }
-}
-
-extension DestinationNavigationLink {
-    public init<Value: Hashable>(value: Value, @ViewBuilder label: () -> Label) where Destination == ValueDestination<Value> {
-        self.init(destination: ValueDestination<Value>.self, value: value, label: label)
-    }
-}
-
-extension DestinationNavigationLink where Label == Text {
-    public init<Value: Hashable>(_ titleKey: LocalizedStringKey, value: Value) where Destination == ValueDestination<Value> {
-        self.init(destination: ValueDestination<Value>.self, value: value) {
-            Text(titleKey)
-        }
-    }
-    
-    public init<Value: Hashable>(_ title: some StringProtocol, value: Value) where Destination == ValueDestination<Value> {
-        self.init(destination: ValueDestination<Value>.self, value: value) {
+    public init(_ title: some StringProtocol, value: Value) {
+        self.init(value: value) {
             Text(title)
         }
     }
@@ -65,26 +45,35 @@ extension DestinationNavigationLink where Label == Text {
 
 struct DestinationNavigationLink_Previews: PreviewProvider {
     private struct TestDestination: ResolvableDestination {
-        func body(value: String) -> some View {
-            Text(value)
+        struct Value: Hashable {
+            let text: String
+        }
+
+        func body(value: Value) -> some View {
+            Text(value.text)
         }
     }
     
     static var previews: some View {
         navigation {
             List {
-                DestinationNavigationLink("Protocol link 1", destination: TestDestination.self, value: "Protocol value 1")
-                
-                DestinationNavigationLink(destination: TestDestination.self, value: "Protocol value 2") {
-                    Text("Protocol link 2")
+                Section("String") {
+                    DestinationNavigationLink("Value 1", value: "Value 1")
+
+                    DestinationNavigationLink(value: "Value 2") {
+                        Text("Value 2")
+                    }
                 }
-                
-                DestinationNavigationLink("Value link 1", value: "Value 1")
-                
-                DestinationNavigationLink(value: "Value 2") {
-                    Text("Value link 2")
+
+                Section("TestDestination.Value") {
+                    DestinationNavigationLink("Value 1", value: TestDestination.Value(text: "Value 1"))
+                    
+                    DestinationNavigationLink(value: TestDestination.Value(text: "Value 2")) {
+                        Text("Value 2")
+                    }
                 }
             }
+            .headerProminence(.increased)
         }
         .destination(TestDestination())
         .destination(for: String.self) { Text($0) }

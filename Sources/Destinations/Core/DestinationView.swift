@@ -8,20 +8,23 @@
 import SwiftUI
 
 /// Abstract view that will be dynamically resolved to the view associated with its ``ResolvableDestination``.
-public struct DestinationView<Destination: ResolvableDestination>: View {
-    let value: Destination.Value
+public struct DestinationView<Value: Hashable>: View {
+    let value: Value
 
     @Environment(\.destinationResolver) private var resolver
 
-    @State private var updatedDestination: Destination?
+    @State private var updatedProvider: ResolvableDestinationProvider<Value>?
+
+    /// Resolve and display a destination view for a data value that conforms to `Hashable`.
+    /// - Parameter value: Value data to provide to the matching ``DestinationView/destination(_:)``
+    public init(value: Value) {
+        self.value = value
+    }
 
     public var body: some View {
         Group {
-            if let resolver, let destination = updatedDestination ?? resolver.provider(for: Destination.self)?.make() {
-                ResolvedDestinationView(
-                    destination: destination,
-                    value: value
-                )
+            if let resolver, let provider = updatedProvider ?? resolver.provider(for: Value.self) {
+                provider.make(value)
             } else {
                 Image(systemName: "exclamationmark.triangle")
                     .symbolVariant(.fill)
@@ -30,29 +33,11 @@ public struct DestinationView<Destination: ResolvableDestination>: View {
         }
         .task(id: resolver?.id) {
             guard let resolver else { return }
-            let values = resolver.providerUpdates(for: Destination.self).eraseToAnyPublisher().values
+            let values = resolver.providerUpdates(for: Value.self).eraseToAnyPublisher().values
             for await provider in values {
-                updatedDestination = provider.make()
+                updatedProvider = provider
             }
-            updatedDestination = nil
+            updatedProvider = nil
         }
-    }
-}
-
-extension DestinationView {
-    /// Create a destination for a custom ``ResolvableDestination`` type.
-    /// - Parameters:
-    ///   - destination: Custom resolvable destination type
-    ///   - value:  ``ResolvableDestination/Value`` data associated with the custom resolvable destination type
-    public init(_ destination: Destination.Type = Destination.self, value: Destination.Value) {
-        self.value = value
-    }
-}
-
-extension DestinationView {
-    /// Create a destination for any value type that conforms to `Hashable`.
-    /// - Parameter value: Value data to provide to the matching ``DestinationView/destination(_:)``
-    public init<Value: Hashable>(value: Value) where Destination == ValueDestination<Value> {
-        self.init(ValueDestination<Value>.self, value: value)
     }
 }
