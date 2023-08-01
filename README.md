@@ -36,7 +36,7 @@ Alternatively, you can register a custom `ResolvableDestination` implementation.
 
 1. Implement a custom type that adopts the `ResolvableDestination` protocol
 2. Register a value of this type with the `destination(_:)` view modifier
-3. In a child view, resolve the view by using `DestinationView` with a value type that matches the value type used in step 1 
+3. In a child view, resolve the destination by using `DestinationView` with a value type that matches the value type used in step 1 
 
 ```swift
 import Destinations
